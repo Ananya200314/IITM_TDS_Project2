@@ -2,10 +2,9 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #   "requests<3",
-#   "pandas",
-#   "plotly",
-#   "python-dotenv",
 #   "rich",
+#   "seaborn",
+#   "matplotlib",
 # ]
 # ///
 
@@ -15,7 +14,8 @@ import logging
 import sys
 from dotenv import load_dotenv
 import requests
-import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Load environment variables from .env file
 load_dotenv()
@@ -89,17 +89,16 @@ def analyze_data(data):
         logging.error(f"Error during analysis: {e}")
         sys.exit("Data analysis failed.")
 
-# Function: Visualize data dynamically (using Plotly for heatmap and top 3 histograms)
+# Function: Visualize data dynamically (using Seaborn for heatmap and top 3 histograms)
 def visualize_data(data, correlation, output_dir, output_name_prefix):
     try:
-        # Create and save the correlation heatmap
-        fig = px.imshow(
-            correlation, 
-            text_auto=True, 
-            title="Correlation Heatmap", 
-            color_continuous_scale='Viridis'
-        )
-        fig.write_image(os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png"))
+        # Create and save the correlation heatmap using Seaborn
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(correlation, annot=True, cmap='viridis', fmt='.2f', cbar=True)
+        plt.title("Correlation Heatmap")
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png"))
+        plt.close()
         logging.info("Correlation heatmap saved as PNG.")
         
         # Create and save top 3 histograms based on highest correlation
@@ -107,15 +106,13 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
         top_columns = numeric_cols.corr().abs().sum().sort_values(ascending=False).head(3).index
 
         for col in top_columns:
-            # Plot histogram using Plotly for the top 3 correlated columns
-            fig = px.histogram(
-                data, 
-                x=col, 
-                title=f"Histogram of {col}",
-                nbins=30, 
-                color_discrete_sequence=["#636EFA"]
-            )
-            fig.write_image(os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png"))
+            # Plot histogram using Seaborn for the top 3 correlated columns
+            plt.figure(figsize=(8, 6))
+            sns.histplot(data[col], bins=30, kde=True, color="#636EFA")
+            plt.title(f"Histogram of {col}")
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png"))
+            plt.close()
             logging.info(f"Histogram for {col} saved as PNG.")
     
     except Exception as e:
@@ -187,7 +184,7 @@ def main():
         sys.exit("Usage: uvicorn autolysis:app --reload")
 
     file_path = sys.argv[1]
-    dataset_name = os.path.splitext(os.path.basename(file_path))[0]
+    dataset_name = os.path.splitext(os.path.basename(file_path))[0()]
     output_name_prefix = dataset_name  # Use dataset name as prefix
     
     # Create output directory based on dataset name
