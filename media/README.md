@@ -40,7 +40,7 @@ This report provides a detailed analysis of the dataset consisting of various me
 #### Categorical Data Analysis
 
 - The dataset indicates a high frequency of the English language (1,306 occurrences) compared to other languages (maximum frequency of 99 for "Unknown").
-- ìMovieî is the most represented type of content (2,211 occurrences), which contributes to the report's focus on cinematic works.
+- ‚ÄúMovie‚Äù is the most represented type of content (2,211 occurrences), which contributes to the report's focus on cinematic works.
 - The title "Kanda Naal Mudhal" appears 9 times, making it the most frequently mentioned title, while "Unknown" is the top designation in terms of date frequency.
 
 #### Insights
@@ -65,7 +65,7 @@ This report provides a detailed analysis of the dataset consisting of various me
 
 3. The reliance on a singular language (English) may alienate potential audiences and should prompt further consideration for multi-language content development strategies. 
 
-4. The popularity of the title ìKanda Naal Mudhalî suggests that specific themes or narratives resonate well with the audience, making it a case study template for future productions.
+4. The popularity of the title ‚ÄúKanda Naal Mudhal‚Äù suggests that specific themes or narratives resonate well with the audience, making it a case study template for future productions.
 
 #### Recommendations
 
