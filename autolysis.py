@@ -78,41 +78,6 @@ def analyze_data(data):
         logging.error(f"Error during analysis: {e}")
         sys.exit("Data analysis failed.")
 
-# Function: Visualize data dynamically (using Plotly for heatmap and top 3 histograms)
-def visualize_data(data, correlation, output_dir, output_name_prefix):
-    try:
-        # Create and save the correlation heatmap
-        fig = px.imshow(
-            correlation, 
-            text_auto=True, 
-            title="Correlation Heatmap", 
-            color_continuous_scale='Viridis'
-        )
-        heatmap_path = os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png")
-        fig.write_image(heatmap_path)
-        logging.info(f"Correlation heatmap saved as PNG: {heatmap_path}")
-        
-        # Create and save top 3 histograms based on highest correlation
-        numeric_cols = data.select_dtypes(include=["number"])
-        top_columns = numeric_cols.corr().abs().sum().sort_values(ascending=False).head(3).index
-
-        for col in top_columns:
-            # Plot histogram using Plotly for the top 3 correlated columns
-            fig = px.histogram(
-                data, 
-                x=col, 
-                title=f"Histogram of {col}",
-                nbins=30, 
-                color_discrete_sequence=["#636EFA"]
-            )
-            histogram_path = os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png")
-            fig.write_image(histogram_path)
-            logging.info(f"Histogram for {col} saved as PNG: {histogram_path}")
-    
-    except Exception as e:
-        logging.error(f"Error during visualization: {e}")
-        sys.exit("Visualization failed.")
-
 # Function: Generate dynamic narrative using AI Proxy
 def generate_narrative(data_info, include_summary=True, include_missing=True, include_correlation=True, include_categorical=True):
     try:
@@ -153,21 +118,16 @@ def generate_narrative(data_info, include_summary=True, include_missing=True, in
         logging.error(f"Error generating narrative: {e}")
         sys.exit("Failed to generate narrative.")
 
-# Function: Create README.md dynamically
-def create_readme(narrative, output_dir, output_name_prefix, top_columns):
+# Function: Create README.md dynamically in the main project directory
+def create_readme(narrative, project_dir, dataset_name):
     try:
-        # Save the README in the corresponding dataset directory
-        readme_path = os.path.join(output_dir, "README.md")
+        # Save the README with a naming convention as "<dataset_name>_README.md" in the main project directory
+        readme_filename = f"{dataset_name}_README.md"
+        readme_path = os.path.join(project_dir, readme_filename)
         with open(readme_path, "w") as file:
-            file.write(f"# Analysis Report for {output_name_prefix}\n\n")
+            file.write(f"# Analysis Report for {dataset_name}\n\n")
             file.write(narrative)
-            file.write("\n\n![Correlation Heatmap](./{output_name_prefix}_correlation_heatmap.png)\n")
-            
-            # Add top 3 histogram links to the README
-            for col in top_columns:
-                file.write(f"![{col} Histogram](./{output_name_prefix}_{col}_histogram.png)\n")
-            
-        logging.info(f"README.md created successfully: {readme_path}")
+        logging.info(f"{readme_filename} created successfully: {readme_path}")
     except Exception as e:
         logging.error(f"Error creating README.md: {e}")
         sys.exit("Failed to create README.md.")
@@ -178,15 +138,12 @@ def main():
         sys.exit("Usage: python autolysis.py <dataset_path>")
 
     file_path = sys.argv[1]
-    dataset_name = os.path.splitext(os.path.basename(file_path))[0]
-    output_dir = os.path.join(dataset_name)
-    os.makedirs(output_dir, exist_ok=True)
+    dataset_name = os.path.splitext(os.path.basename(file_path))[0]  # Extract dataset name without extension
+    project_dir = os.getcwd()  # Use the current working directory as the project directory
 
     data = load_dataset(file_path)
     processed_data = preprocess_data(data)
     analysis_results = analyze_data(processed_data)
-
-    top_columns = processed_data.select_dtypes(include=["number"]).corr().abs().sum().sort_values(ascending=False).head(3).index
 
     narrative = generate_narrative(
         analysis_results, 
@@ -196,8 +153,7 @@ def main():
         include_categorical=True
     )
 
-    create_readme(narrative, output_dir, dataset_name, top_columns)
-    visualize_data(processed_data, analysis_results["correlation"], output_dir, dataset_name)
+    create_readme(narrative, project_dir, dataset_name)
 
 if __name__ == "__main__":
     main()
