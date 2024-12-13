@@ -88,8 +88,9 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
             title="Correlation Heatmap", 
             color_continuous_scale='Viridis'
         )
-        fig.write_image(os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png"))
-        logging.info("Correlation heatmap saved as PNG.")
+        heatmap_path = os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png")
+        fig.write_image(heatmap_path)
+        logging.info(f"Correlation heatmap saved as PNG: {heatmap_path}")
         
         # Create and save top 3 histograms based on highest correlation
         numeric_cols = data.select_dtypes(include=["number"])
@@ -104,8 +105,9 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
                 nbins=30, 
                 color_discrete_sequence=["#636EFA"]
             )
-            fig.write_image(os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png"))
-            logging.info(f"Histogram for {col} saved as PNG.")
+            histogram_path = os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png")
+            fig.write_image(histogram_path)
+            logging.info(f"Histogram for {col} saved as PNG: {histogram_path}")
     
     except Exception as e:
         logging.error(f"Error during visualization: {e}")
@@ -152,20 +154,20 @@ def generate_narrative(data_info, include_summary=True, include_missing=True, in
         sys.exit("Failed to generate narrative.")
 
 # Function: Create README.md dynamically
-def create_readme(narrative, output_dir, output_name_prefix):
+def create_readme(narrative, output_dir, output_name_prefix, top_columns):
     try:
         # Save the README in the corresponding dataset directory
-        readme_path = os.path.join(output_dir, f"{output_name_prefix}_README.md")
+        readme_path = os.path.join(output_dir, "README.md")
         with open(readme_path, "w") as file:
-            file.write("# Analysis Report\n\n")
+            file.write(f"# Analysis Report for {output_name_prefix}\n\n")
             file.write(narrative)
-            file.write("\n\n![Correlation Heatmap](goodreads_correlation_heatmap.png)\n")
+            file.write("\n\n![Correlation Heatmap](./{output_name_prefix}_correlation_heatmap.png)\n")
             
             # Add top 3 histogram links to the README
-            for col in ["col1", "col2", "col3"]:  # Replace with actual column names
-                file.write(f"![{col} Histogram]({output_name_prefix}_{col}_histogram.png)\n")
+            for col in top_columns:
+                file.write(f"![{col} Histogram](./{output_name_prefix}_{col}_histogram.png)\n")
             
-        logging.info("README.md created successfully.")
+        logging.info(f"README.md created successfully: {readme_path}")
     except Exception as e:
         logging.error(f"Error creating README.md: {e}")
         sys.exit("Failed to create README.md.")
@@ -173,13 +175,10 @@ def create_readme(narrative, output_dir, output_name_prefix):
 # Main function
 def main():
     if len(sys.argv) != 2:
-        sys.exit("Usage: uvicorn autolysis:app --reload")
+        sys.exit("Usage: python autolysis.py <dataset_path>")
 
     file_path = sys.argv[1]
     dataset_name = os.path.splitext(os.path.basename(file_path))[0]
-    output_name_prefix = dataset_name  # Use dataset name as prefix
-    
-    # Create output directory based on dataset name
     output_dir = os.path.join(dataset_name)
     os.makedirs(output_dir, exist_ok=True)
 
@@ -187,17 +186,18 @@ def main():
     processed_data = preprocess_data(data)
     analysis_results = analyze_data(processed_data)
 
-    # Generate narrative dynamically by choosing which sections to include
+    top_columns = processed_data.select_dtypes(include=["number"]).corr().abs().sum().sort_values(ascending=False).head(3).index
+
     narrative = generate_narrative(
         analysis_results, 
-        include_summary=True,  # User can modify these flags as needed
+        include_summary=True, 
         include_missing=True,
         include_correlation=True,
         include_categorical=True
     )
 
-    create_readme(narrative, output_dir, output_name_prefix)
-    visualize_data(processed_data, analysis_results["correlation"], output_dir, output_name_prefix)
+    create_readme(narrative, output_dir, dataset_name, top_columns)
+    visualize_data(processed_data, analysis_results["correlation"], output_dir, dataset_name)
 
 if __name__ == "__main__":
     main()
