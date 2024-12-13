@@ -9,6 +9,7 @@
 # ]
 # ///
 
+
 import os
 import pandas as pd
 import logging
@@ -40,7 +41,8 @@ logging.basicConfig(
 def load_dataset(file_path):
     try:
         data = pd.read_csv(file_path, encoding="latin1")
-        logging.info("Dataset loaded successfully.")
+        logging.info(f"Dataset loaded with {data.shape[0]} rows and {data.shape[1]} columns.")
+        logging.info(f"First few rows of the dataset:\n{data.head()}")
         return data
     except Exception as e:
         logging.error(f"Error loading dataset: {e}")
@@ -73,6 +75,11 @@ def analyze_data(data):
         numeric_cols = data.select_dtypes(include=["number"])
         categorical_cols = data.select_dtypes(exclude=["number"])
 
+        # Check if there are enough numeric columns
+        if numeric_cols.empty:
+            logging.error("No numeric columns available for correlation.")
+            sys.exit("No numeric columns found for correlation.")
+
         summary = numeric_cols.describe().to_string()
         missing = data.isnull().sum()
         correlation = numeric_cols.corr()
@@ -93,14 +100,21 @@ def analyze_data(data):
 # Function: Visualize data dynamically (using Seaborn for heatmap and top 3 histograms)
 def visualize_data(data, correlation, output_dir, output_name_prefix):
     try:
+        # Check if correlation matrix is empty
+        if correlation.empty:
+            logging.error("Correlation matrix is empty.")
+            sys.exit("Correlation matrix is empty. Cannot proceed with visualization.")
+        
         # Create and save the correlation heatmap using Seaborn
+        logging.info("Creating correlation heatmap...")
         plt.figure(figsize=(10, 8))
         sns.heatmap(correlation, annot=True, cmap='viridis', fmt='.2f', cbar=True)
         plt.title("Correlation Heatmap")
         plt.tight_layout()
-        plt.savefig(os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png"))
+        heatmap_path = os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png")
+        plt.savefig(heatmap_path)
         plt.close()
-        logging.info("Correlation heatmap saved as PNG.")
+        logging.info(f"Correlation heatmap saved at {heatmap_path}.")
         
         # Create and save top 3 histograms based on highest correlation
         numeric_cols = data.select_dtypes(include=["number"])
@@ -108,17 +122,19 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
 
         for col in top_columns:
             # Plot histogram using Seaborn for the top 3 correlated columns
+            logging.info(f"Creating histogram for {col}...")
             plt.figure(figsize=(8, 6))
             sns.histplot(data[col], bins=30, kde=True, color="#636EFA")
             plt.title(f"Histogram of {col}")
+            histogram_path = os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png")
             plt.tight_layout()
-            plt.savefig(os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png"))
+            plt.savefig(histogram_path)
             plt.close()
-            logging.info(f"Histogram for {col} saved as PNG.")
+            logging.info(f"Histogram for {col} saved at {histogram_path}.")
     
     except Exception as e:
         logging.error(f"Error during visualization: {e}")
-        sys.exit("Visualization failed.")
+        sys.exit(f"Visualization failed: {e}")
 
 # Function: Generate dynamic narrative using AI Proxy
 def generate_narrative(data_info, include_summary=True, include_missing=True, include_correlation=True, include_categorical=True):
