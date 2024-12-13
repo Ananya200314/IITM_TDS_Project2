@@ -21,7 +21,7 @@ No missing values were detected, ensuring data integrity for analysis.
 #### **Insights from the Data**
 
 1. **Average Rating Analysis**
-   - The mean average rating across the dataset is **4.00**, indicating a generally favorable reception for the books. Itís essential to analyze what factors contribute to this high average.
+   - The mean average rating across the dataset is **4.00**, indicating a generally favorable reception for the books. It‚Äôs essential to analyze what factors contribute to this high average.
 
 2. **Ratings Distribution**
    - The distribution of ratings indicates a significant number of **5-star ratings** (19,965) compared to other ratings, with a noticeable tapering off toward lower ratings. This reflects a positive reception but could imply that many books are either loved or have received biased reviews.
@@ -30,7 +30,7 @@ No missing values were detected, ensuring data integrity for analysis.
    - The dataset shows that the average publication year is approximately **1982**, with a gradual increase in publication years over time. This trend highlights the potential interest in contemporary literature, necessitating deeper analysis into more recent publications.
 
 4. **Authors and Popularity**
-   - ì**Stephen King**î is the most frequently listed author, appearing **60 times**. This suggests that his works dominate reader interest, underscoring the importance of popular authors in driving ratings.
+   - ‚Äú**Stephen King**‚Äù is the most frequently listed author, appearing **60 times**. This suggests that his works dominate reader interest, underscoring the importance of popular authors in driving ratings.
 
 5. **Impact of Ratings Count on Ratings**
    - There is a strong positive correlation between ratings counts and average ratings (mean correlation of **0.726**). This suggests more widely read books tend to receive higher ratings, potentially due to visibility and social proof.
@@ -42,7 +42,7 @@ No missing values were detected, ensuring data integrity for analysis.
 
 #### **Implications**
 
-- **For Authors and Publishers**: Understanding the high levels of ratings can guide the strategies in marketing new releases. The correlation between ratings and visibility illustrates that enhancing an authorís presence significantly influences reader acquisition.
+- **For Authors and Publishers**: Understanding the high levels of ratings can guide the strategies in marketing new releases. The correlation between ratings and visibility illustrates that enhancing an author‚Äôs presence significantly influences reader acquisition.
   
 - **For Marketers**: With data on the popularity of authors, books can be strategically marketed alongside well-known authors to draw in readership. Utilizing affiliations with these authors could enhance book sales.
 
