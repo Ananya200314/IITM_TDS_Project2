@@ -185,7 +185,7 @@ def main():
         sys.exit("Usage: uvicorn autolysis:app --reload")
 
     file_path = sys.argv[1]
-    dataset_name = os.path.splitext(os.path.basename(file_path))[0()]
+    dataset_name = os.path.splitext(os.path.basename(file_path))[0]
     output_name_prefix = dataset_name  # Use dataset name as prefix
     
     # Create output directory based on dataset name
