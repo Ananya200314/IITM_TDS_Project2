@@ -1,3 +1,14 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "requests<3",
+#   "pandas",
+#   "plotly",
+#   "python-dotenv",
+#   "rich",
+# ]
+# ///
+
 import os
 import pandas as pd
 import logging
