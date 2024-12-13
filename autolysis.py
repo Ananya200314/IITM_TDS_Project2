@@ -17,6 +17,7 @@ import sys
 from dotenv import load_dotenv
 import requests
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Load environment variables from .env file
 load_dotenv()
@@ -96,10 +97,10 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
         # Create and save the correlation heatmap using Seaborn
         heatmap_file = os.path.join(output_dir, f"{output_name_prefix}_correlation_heatmap.png")
         sns.heatmap(correlation, annot=True, cmap='viridis', fmt='.2f', cbar=True)
-        sns.plt.title("Correlation Heatmap")
-        sns.plt.tight_layout()
-        sns.plt.savefig(heatmap_file)  # Save to file
-        sns.plt.close()  # Close the plot to avoid showing it
+        plt.title("Correlation Heatmap")  # Use plt.title() for titles
+        plt.tight_layout()
+        plt.savefig(heatmap_file)  # Save to file
+        plt.close()  # Close the plot
         logging.info(f"Correlation heatmap saved as {heatmap_file}.")
         
         # Create and save top 3 histograms based on highest correlation
@@ -110,10 +111,10 @@ def visualize_data(data, correlation, output_dir, output_name_prefix):
             # Plot histogram using Seaborn for the top 3 correlated columns
             hist_file = os.path.join(output_dir, f"{output_name_prefix}_{col}_histogram.png")
             sns.histplot(data[col], bins=30, kde=True, color="#636EFA")
-            sns.plt.title(f"Histogram of {col}")
-            sns.plt.tight_layout()
-            sns.plt.savefig(hist_file)  # Save to file
-            sns.plt.close()  # Close the plot
+            plt.title(f"Histogram of {col}")
+            plt.tight_layout()
+            plt.savefig(hist_file)  # Save to file
+            plt.close()  # Close the plot
             logging.info(f"Histogram for {col} saved as {hist_file}.")
     
     except Exception as e:
