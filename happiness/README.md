@@ -37,7 +37,7 @@ This dataset encompasses a comprehensive study of global wellbeing metrics acros
    - Conversely, perceptions of corruption correlate negatively with Life Ladder scores (**-0.42**). Higher corruption perceptions can erode trust in institutions and harm subjective wellbeing.
 
 6. **Affective Wellbeing**:
-   - There’s a positive correlation between positive affect and Life Ladder (**0.51**) and a negative correlation with negative affect (**-0.35**). This underscores that emotional states significantly impact how individuals rate their wellbeing.
+   - Thereâ€™s a positive correlation between positive affect and Life Ladder (**0.51**) and a negative correlation with negative affect (**-0.35**). This underscores that emotional states significantly impact how individuals rate their wellbeing.
 
 #### Implications
 
