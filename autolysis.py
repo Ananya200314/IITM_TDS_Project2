@@ -6,6 +6,7 @@
 #   "seaborn",
 #   "python-dotenv",
 #   "matplotlib",
+#   "ipykernel"
 # ]
 # ///
 
@@ -18,6 +19,7 @@ from dotenv import load_dotenv
 import requests
 import seaborn as sns
 import matplotlib.pyplot as plt
+plt.use('Agg')
 
 # Load environment variables from .env file
 load_dotenv()
